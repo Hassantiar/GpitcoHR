@@ -1,0 +1,34 @@
+﻿@page "/"
+@layout MainLayout
+@using CLENT.Pages.AdminPages;
+@using CLENT.Pages.DepartmentPages
+<TableBanner/>
+<GeneralDepartmentPage/>
+@code {
+    [CascadingParameter] public Task<AuthenticationState> authenticatex { get; set; }
+    protected async override Task OnInitializedAsync()
+    {
+        await UsersCheck();
+    }
+    private async Task UsersCheck()
+    {
+        var userx = (await authenticatex).User;
+        if (userx.Identity == null)
+        {
+
+
+            // bool IsOk = userx.Identity!.IsAuthenticated;
+            // if (IsOk ==false)
+            NavManager.NavigateTo("/identity/account/login");
+        }
+        else
+        {
+            bool IsOk = userx.Identity!.IsAuthenticated;
+            if (IsOk == false)
+                NavManager.NavigateTo("/identity/account/login");
+             else
+                 NavManager.NavigateTo("/home/Dashboard");
+
+        }
+    }
+}

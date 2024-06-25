@@ -1,0 +1,39 @@
+﻿<div class="btn-group">
+    <img src="@(ProileImage==""?"../Images/Profile/mail.jpg":ProileImage)" width="30" height="40" style="border-radius:50px; margin-right:5px;" />
+    <button type="button" class="btn btn-none border-0 dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="visually-hidden">Toggle DropDown</span>
+    </button>
+    <ul class="dropdown-menu mt-2 border-0">
+        <li>
+            <div class="card">
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a class="text-primery fw-bold float-start text-decoration-none" style="font-family:Tahoma; cursor:pointer;">
+                                <i class="bi bi-person-gear"></i>
+                                Profile
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-danger btn-sm fw-bold w-100" @onclick="LogoutClicked">
+                        <i class="bi bi-box-arrow-down-left"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+
+        </li>
+    </ul>
+</div>
+@code{
+    public string ProileImage{get;set;}="";
+    async Task LogoutClicked()
+    {
+        var logoutmode = new UserSession();
+        var customAthentstatprovider = (CustomAuthanticationStateProvider)AuthStateProvider;
+        await customAthentstatprovider.UpdateAuthenticationState(logoutmode);
+        NavManager.NavigateTo("/identity/account/login", replace: true, forceLoad: true);
+    }
+}

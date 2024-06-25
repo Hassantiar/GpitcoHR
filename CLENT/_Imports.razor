@@ -1,0 +1,32 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using Base.Entites
+@using CLENT.Application_States
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.JSInterop
+@using CLENT
+@using CLENT.Layout
+@using Base.DTOs
+@using ClientLibrary.Helper
+@using Microsoft.AspNetCore.Components.Authorization
+@using ClientLibrary.Sevices.Contact
+@using Microsoft.AspNetCore.Components
+@using Syncfusion.Blazor.Popups
+
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IUserAccountServices accounserviec
+@inject NavigationManager NavManager
+@inject AllStates allstates
+@inject SfDialogService dialogService
+
+@inject IGgenaricInterface<GeneralDepartment> generaldepartmentService
+@inject IGgenaricInterface<Departrment> departmentService
+@inject IGgenaricInterface<Branch> branchservice
+@inject IGgenaricInterface<City> cityservice
+@inject IGgenaricInterface<Twon> twonservice
+@inject IGgenaricInterface<Country> countryservice
+@inject IGgenaricInterface<Emploee> emploeeservice

@@ -1,0 +1,37 @@
+using CLENT;
+using ClientLibrary.Helper;
+using ClientLibrary.Sevices.Contact;
+using ClientLibrary.Sevices.Implemintation;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Blazored.LocalStorage;
+using Syncfusion.Blazor.Popups;
+using Syncfusion.Blazor;
+using CLENT.Application_States;
+using Base.Entites;
+
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
+builder.Services.AddTransient<CustomHttpHendler>();
+builder.Services.AddHttpClient("SystemApiClient", clien => { clien.BaseAddress = new Uri("https://localhost:7125/"); }).AddHttpMessageHandler<CustomHttpHendler>();
+//builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7125/") });
+builder.Services.AddAuthorizationCore();
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<GetHttpClient>();
+builder.Services.AddScoped<LocalStorgService>();
+builder.Services.AddScoped<AuthenticationStateProvider,CustomAuthanticationStateProvider>();
+builder.Services.AddScoped<IUserAccountServices, UserAccountServices>();
+builder.Services.AddScoped<AllStates>();
+builder.Services.AddSyncfusionBlazor();
+builder.Services.AddScoped<SfDialogService>();
+builder.Services.AddScoped<IGgenaricInterface<GeneralDepartment>, GgenaricInterface<GeneralDepartment>>();
+builder.Services.AddScoped<IGgenaricInterface<Departrment>, GgenaricInterface<Departrment>>();
+builder.Services.AddScoped<IGgenaricInterface<Branch>, GgenaricInterface<Branch>>();
+
+builder.Services.AddScoped<IGgenaricInterface<City>, GgenaricInterface<City>>();
+builder.Services.AddScoped<IGgenaricInterface<Country>, GgenaricInterface<Country>>();
+builder.Services.AddScoped<IGgenaricInterface<Twon>, GgenaricInterface<Twon>>();
+builder.Services.AddScoped<IGgenaricInterface<Emploee>, GgenaricInterface<Emploee>>();
+await builder.Build().RunAsync();

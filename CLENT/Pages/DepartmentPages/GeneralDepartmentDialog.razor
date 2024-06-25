@@ -1,0 +1,48 @@
+﻿@using Base.Entites
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Popups
+@inject SfDialogService dialogservice
+<SfDialog Width="350px" IsModal="true"ShowCloseIcon="true"@bind-Visible="IsVisibale">
+    <DialogEvents OnOpen="OpenDialog"></DialogEvents>
+        <DialogTemplates>
+            <Header>@Tital Department</Header>
+            <Content>
+            <EditForm Model="GeneralDepartment" Enhance OnSubmit="Save">
+                    <div class="card border-success">
+                        <div class="card-body">
+                            <div class="form-groub">
+                                <label class="form-label">Name</label>
+                            <InputText @bind-Value="GeneralDepartment.Name" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </EditForm>
+            </Content>
+        </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="SAVE" Type="ButtonType.Submit" IsPrimary="true" OnClick="Save"/>
+    </DialogButtons>
+</SfDialog>
+
+@code {
+    [Parameter] public GeneralDepartment GeneralDepartment { get; set; } = new();
+    [Parameter] public EventCallback<GeneralDepartment> HandelSaveOperationEvent{ get; set; }
+    private bool IsVisibale { get; set; } = false;
+    public string Tital { get; set; } = "Add";
+    public void OpenDialog()
+    {
+        IsVisibale = true;
+        StateHasChanged();
+    }
+    async void Save()
+    {
+        if (string.IsNullOrEmpty(GeneralDepartment.Name))
+            await dialogservice.AlertAsync("you need to proived department name.", "Alart!");
+        else
+            await HandelSaveOperationEvent.InvokeAsync(GeneralDepartment);
+    }
+    public void ChangeTital(string tital)
+    {
+        Tital = tital;
+    }
+}

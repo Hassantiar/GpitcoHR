@@ -1,0 +1,106 @@
+﻿@page "/identity/account/login"
+@using CLENT.Pages.buttonLoginSpanner
+@using Syncfusion.Blazor.Popups
+@layout AthentLayout
+@inject SfDialogService Dialogservices
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4">
+            <EditForm Enhance Model="User" OnValidSubmit="HandleLoginnew">
+                <DataAnnotationsValidator />
+                <div class="card bg-dark" style="opacity:0.7;margin-top:50%;border-radius:10px;color:wheat;font-weight:bold;">
+                    <div class="card-header text-center fs-5 mb-2"> Login</div>
+                    <div class="container">
+                        <div class="row">
+
+                            <div class="col-lg-4 col-md-4 col-sm-4"></div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 d-flex justify-content-center">
+                                <img style="border-radius:20px" src="../Images/company/logo.png" height="50" width="50" />
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4"></div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mt-3">
+
+                            <label class="form-label">Email</label>
+                            <InputText @bind-Value="User.Email" class="form-control"></InputText>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" @bind="User.Password" class="form-control" />
+                        </div>
+                        <div class="form-group mt-3">
+                            @if (ShowSpinner)
+                            {
+                                <LoginSpannerPage></LoginSpannerPage>
+                            }
+                            else
+                            {
+                                <button class="btn btn-outline-primary float-end" type="submit">login</button>
+                            }
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="text-center">
+                            dont have account |
+                            <a class="btn-link" href="identity/account/Register">Register</a>
+                        </span>
+                        <ValidationSummary />
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+        <div class="col-lg-4"></div>
+    </div>
+</div>
+
+@code {
+    public bool ShowSpinner { get; set; } = false;
+    Login User = new();
+
+    [CascadingParameter] public Task<AuthenticationState> authenticatex { get; set; }
+    protected async override Task OnInitializedAsync()
+    {
+        await UsersCheck();
+    }
+
+    async Task HandleLoginnew()
+    {
+        ShowSpinner = true;
+        var result = await accounserviec.SigninAsync(User);
+        if (result.Flag)
+        {
+            await Desplayer(result.Message, "Success");
+            var customerAuthstateProvider = (CustomAuthanticationStateProvider)AuthStateProvider;
+            await customerAuthstateProvider.UpdateAuthenticationState(new UserSession() { Token = result.Token, RefreshToken = result.RefrashToken });
+            NavManager.NavigateTo("/", forceLoad: true);
+        }
+        else
+        {
+            await Desplayer(result.Message, "Alert!");
+        }
+        ShowSpinner = false;
+    }
+    private async Task Desplayer(string content, string tital)
+    {
+        await Dialogservices.AlertAsync(content, tital);
+    }
+    private async Task UsersCheck()
+    {
+        var userx = (await authenticatex).User;
+        if (userx.Identity == null)
+        {
+            NavManager.NavigateTo("/identity/account/login");
+        }
+        else
+        {
+
+
+            bool IsOk = userx.Identity!.IsAuthenticated;
+            if (IsOk)
+                NavManager.NavigateTo("/home/Dashboard");
+        }
+    }
+}
